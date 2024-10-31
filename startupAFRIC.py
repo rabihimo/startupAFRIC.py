@@ -3,56 +3,47 @@ import yfinance as yf
 import pandas as pd
 import datetime
 
-st.set_page_config(layout="wide", page_title="Best African Startups (3-Year Performance)")
+st.set_page_config(layout="wide", page_title="African Startup Ranking")
+st.title("Top Performing African Startups (3-Year Analysis)")
 
-st.title("Best African Startups (3-Year Performance)")
-
-# Replace with actual African startup symbols and corresponding stock tickers.
-# VERY IMPORTANT: These MUST be valid and publicly traded stock tickers.
+# Replace with actual African startup stock symbols
 african_startups = {
-    "StartUpA": "YOUR_TICKER_A",  # Example - Replace with real tickers
-    "StartUpB": "YOUR_TICKER_B",
-    "StartUpC": "YOUR_TICKER_C",
-    "StartUpD": "YOUR_TICKER_D",
-    "StartUpE": "YOUR_TICKER_E"
+    "Jumia Technologies": "JMIA",
+    "Interswitch": "ISW",  # Example - replace with real ticker if available
+    "Flutterwave": "FLTW",  # Example - replace with real ticker if available
+    "Andela": "ANDL",      # Example - replace with real ticker if available
+    "Copia Global": "COPI"   # Example - replace with real ticker if available
 }
 
-# Sidebar for date input (fixed to 3 years)
-st.sidebar.title("Input")
-end_date = st.sidebar.date_input('End Date', value=datetime.date.today())
-start_date = end_date - datetime.timedelta(days=3 * 365)  # 3 years prior
+# Set analysis period (3 years)
+end_date = datetime.date.today()
+start_date = end_date - datetime.timedelta(days=3 * 365)  # Approx. 3 years
 
-
-# Fetch data
+# Fetch and analyze data
 startup_data = {}
 for name, symbol in african_startups.items():
     try:
-        startup_data[name] = yf.download(symbol, start=start_date, end=end_date)['Close']
+        data = yf.download(symbol, start=start_date, end=end_date)
+        if not data.empty:
+            # Calculate 3-year return (simple percentage change)
+            three_year_return = (data['Close'][-1] - data['Close'][0]) / data['Close'][0] * 100
+            startup_data[name] = three_year_return
+        else:
+            st.warning(f"No data found for {name} ({symbol}) within the 3-year period.")
     except Exception as e:
-        st.warning(f"Could not retrieve data for {name} ({symbol}): {e}. Check ticker symbol and data availability.")
+        st.warning(f"Could not retrieve data for {name} ({symbol}): {e}")
 
-# Analysis and ranking (if data is available)
+# Rank startups by 3-year return
 if startup_data:
-    comparison_df = pd.DataFrame(startup_data)
+    ranked_startups = sorted(startup_data.items(), key=lambda item: item[1], reverse=True)
+    
+    st.subheader("Ranking Based on 3-Year Return:")
+    for i, (name, return_value) in enumerate(ranked_startups):
+        st.write(f"{i + 1}. {name}: {return_value:.2f}%")
+    
+    # Create a bar chart for visualization
+    df_ranked = pd.DataFrame(ranked_startups, columns=['Startup', '3-Year Return'])
+    st.bar_chart(df_ranked, x='Startup', y='3-Year Return')
 
-    # Calculate total return over the period
-    total_returns = (comparison_df.iloc[-1] / comparison_df.iloc[0]) - 1
-
-    # Sort by total return
-    ranked_startups = total_returns.sort_values(ascending=False)
-
-    st.subheader("Ranked by 3-Year Total Return")
-    st.write(ranked_startups)
-
-    st.subheader("Closing Price Comparison")
-    st.line_chart(comparison_df)
 else:
-    st.warning("No stock data available for comparison.")
-
-st.sidebar.markdown("""
-**Instructions:**
-
-1. **Replace Placeholder Tickers:**  Use REAL stock tickers.  If the startups aren't public, this won't work.
-2. **Data Availability:** Yahoo Finance data quality varies.  Double-check your tickers.
-3. **Interpretation:** Total return is calculated as (Ending Price / Starting Price) - 1.
-""")
+    st.warning("No sufficient data available for ranking.")
