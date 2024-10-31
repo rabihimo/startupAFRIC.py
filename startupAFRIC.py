@@ -1,9 +1,9 @@
-import streamlit as st
-import matplotlib.pyplot as plt
-import datetime
-import plotly.graph_objs as go
-import yfinance as yf
 import pandas as pd
+import matplotlib.pyplot as plt
+from flask import Flask, render_template, send_file
+import os
+
+app = Flask(__name__)
 
 # Sample data: A list of startups with hypothetical metrics
 data = {
@@ -32,7 +32,19 @@ plt.barh(ranked_startups['Startup'], ranked_startups['Score'], color='cornflower
 plt.xlabel('Score')
 plt.title('Ranking of Startups Based on Score')
 plt.grid(axis='x')
-plt.show()
 
-# Display the ranked startups
-print(ranked_startups[['Startup', 'Score']])
+# Save the plot as a PNG file
+plot_file = 'startup_ranking.png'
+plt.savefig(plot_file)
+plt.close()  # Close the plot to free up memory
+
+@app.route('/')
+def index():
+    return render_template('index.html', startups=ranked_startups.to_dict(orient='records'))
+
+@app.route('/plot')
+def plot():
+    return send_file(plot_file)
+
+if __name__ == '__main__':
+    app.run(debug=True)
