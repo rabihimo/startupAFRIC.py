@@ -34,7 +34,7 @@ if startup_data:
 
 else:
     st.warning("No sufficient data available for ranking.")
-Use code with caution
+
 Changes Made:
 
 Import matplotlib.pyplot: Added import matplotlib.pyplot as plt at the beginning.
