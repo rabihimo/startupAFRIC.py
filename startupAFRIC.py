@@ -1,5 +1,9 @@
-import pandas as pd
+import streamlit as st
 import matplotlib.pyplot as plt
+import datetime
+import plotly.graph_objs as go
+import yfinance as yf
+import pandas as pd
 
 # Sample data: A list of startups with hypothetical metrics
 data = {
