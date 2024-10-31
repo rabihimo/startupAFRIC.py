@@ -35,7 +35,6 @@ if startup_data:
 else:
     st.warning("No sufficient data available for ranking.")
 
-Graph Creation (matplotlib):
 Created a figure and axes using fig, ax = plt.subplots().
 Used ax.bar() to create the bar chart.
 Set labels and title using ax.set_xlabel(), ax.set_ylabel(), and ax.set_title().
