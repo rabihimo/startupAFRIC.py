@@ -3,16 +3,17 @@ import yfinance as yf
 import pandas as pd
 import datetime
 
-st.set_page_config(layout="wide", page_title="African Startup Ranking")
-st.title("Top Performing African Startups (3-Year Analysis)")
+st.set_page_config(layout="wide", page_title="Global Startup Ranking")
+st.title("Top Performing Global Startups (3-Year Analysis)")
 
-# Replace with actual African startup stock symbols
-african_startups = {
-    "Jumia Technologies": "JMIA",
-    "Interswitch": "ISW",  # Example - replace with real ticker if available
-    "Flutterwave": "FLTW",  # Example - replace with real ticker if available
-    "Andela": "ANDL",      # Example - replace with real ticker if available
-    "Copia Global": "COPI"   # Example - replace with real ticker if available
+# Replace with actual global startup stock symbols
+global_startups = {
+    "Airbnb": "ABNB",
+    "Snowflake": "SNOW",
+    "DoorDash": "DASH",
+    "UiPath": "PATH",
+    "Affirm": "AFRM",
+    # Add more startups here...
 }
 
 # Set analysis period (3 years)
@@ -21,7 +22,7 @@ start_date = end_date - datetime.timedelta(days=3 * 365)  # Approx. 3 years
 
 # Fetch and analyze data
 startup_data = {}
-for name, symbol in african_startups.items():
+for name, symbol in global_startups.items():
     try:
         data = yf.download(symbol, start=start_date, end=end_date)
         if not data.empty:
