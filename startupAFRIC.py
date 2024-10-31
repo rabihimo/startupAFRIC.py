@@ -1,6 +1,5 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from flask import Flask, render_template, send_file
 import os
 
 # Sample data: A list of startups with hypothetical metrics
