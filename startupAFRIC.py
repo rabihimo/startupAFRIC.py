@@ -35,7 +35,6 @@ if startup_data:
 else:
     st.warning("No sufficient data available for ranking.")
 
-Import matplotlib.pyplot: Added import matplotlib.pyplot as plt at the beginning.
 Graph Creation (matplotlib):
 Created a figure and axes using fig, ax = plt.subplots().
 Used ax.bar() to create the bar chart.
