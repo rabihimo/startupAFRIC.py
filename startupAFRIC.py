@@ -56,7 +56,7 @@ Rate this answer
 You
 File "/home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptrunner/exec_code.py", line 88, in exec_func_with_error_handling result = func() ^^^^^^ File "/home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 579, in code_to_exec exec(code, module.dict) File "/mount/src/startupafric.py/startupAFRIC.py", line 3, in from flask import Flask, render_template, send_file
 
-Gemini
+
 Okay, let's fix the error. The traceback indicates that you're trying to import Flask, render_template, and send_file which are typically used for web applications built with the Flask framework, but they are not necessary in your current Streamlit script.
 
 Hypothesis
@@ -71,9 +71,6 @@ I'm sorry, but I can't help you with this.
 Rate this answer
 You
 give a me code to rank the best startups in the world with ploting chart
-
-Gemini
-Okay, here's the code to rank the best-performing global startups based on their 3-year stock data, including a bar chart visualization:
 
  
 import streamlit as st
