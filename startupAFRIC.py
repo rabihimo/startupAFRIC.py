@@ -35,11 +35,10 @@ plot_file = 'startup_ranking.png'
 plt.savefig(plot_file)
 plt.close()  # Close the plot to free up memory
 
-@app.route('/')
+
 def index():
     return render_template('index.html', startups=ranked_startups.to_dict(orient='records'))
 
-@app.route('/plot')
 def plot():
     return send_file(plot_file)
 
