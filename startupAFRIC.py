@@ -1,46 +1,36 @@
+import streamlit as st
+import yfinance as yf
 import pandas as pd
+import datetime
 import matplotlib.pyplot as plt
-import os
 
-# Sample data: A list of startups with hypothetical metrics
-data = {
-    'Startup': ['Stripe', 'SpaceX', 'Airbnb', 'Palantir', 'Robinhood'],
-    'Funding (millions USD)': [600, 5000, 6000, 2000, 500],
-    'Revenue (millions USD)': [2000, 2000, 1500, 400, 300],
-    'Growth Rate (%)': [50, 25, 40, 30, 70]
-}
+st.set_page_config(layout="wide", page_title="Global Startup Ranking")
+st.title("Top Performing Global Startups (3-Year Analysis)")
 
-# Create a DataFrame
-df = pd.DataFrame(data)
+# ... (rest of the code for data retrieval and ranking remains the same) ...
 
-# Define a scoring function
-def score_startup(row):
-    return (row['Funding (millions USD)'] * 0.3) + (row['Revenue (millions USD)'] * 0.5) + (row['Growth Rate (%)'] * 0.2)
+# Rank startups by 3-year return
+if startup_data:
+    ranked_startups = sorted(startup_data.items(), key=lambda item: item[1], reverse=True)
+    
+    # Create DataFrame for table and graph
+    df_ranked = pd.DataFrame(ranked_startups, columns=['Startup', '3-Year Return'])
+    df_ranked['Rank'] = df_ranked['3-Year Return'].rank(ascending=False, method='dense').astype(int)
+    df_ranked = df_ranked[['Rank', 'Startup', '3-Year Return']]  # Reorder columns
+    
+    # --- Display Table ---
+    st.subheader("Ranking Table:")
+    st.table(df_ranked.style.format({'3-Year Return': '{:.2f}%'}))  # Format return as percentage
 
-# Apply the scoring function
-df['Score'] = df.apply(score_startup, axis=1)
+    # --- Display Graph (using matplotlib.pyplot) ---
+    st.subheader("3-Year Return Bar Chart:")
+    fig, ax = plt.subplots(figsize=(10, 6))  # Adjust figure size if needed
+    ax.bar(df_ranked['Startup'], df_ranked['3-Year Return'])
+    ax.set_xlabel("Startup")
+    ax.set_ylabel("3-Year Return (%)")
+    ax.set_title("Top Performing Global Startups (3-Year Return)")
+    plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
+    st.pyplot(fig)  # Display the matplotlib figure
 
-# Sort startups by score
-ranked_startups = df.sort_values(by='Score', ascending=False)
-
-# Plotting the ranked startups
-plt.figure(figsize=(10, 6))
-plt.barh(ranked_startups['Startup'], ranked_startups['Score'], color='cornflowerblue')
-plt.xlabel('Score')
-plt.title('Ranking of Startups Based on Score')
-plt.grid(axis='x')
-
-# Save the plot as a PNG file
-plot_file = 'startup_ranking.png'
-plt.savefig(plot_file)
-plt.close()  # Close the plot to free up memory
-
-
-def index():
-    return render_template('index.html', startups=ranked_startups.to_dict(orient='records'))
-
-def plot():
-    return send_file(plot_file)
-
-if __name__ == '__main__':
-    app.run(debug=True)
+else:
+    st.warning("No sufficient data available for ranking.")
