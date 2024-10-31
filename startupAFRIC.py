@@ -33,19 +33,3 @@ if startup_data:
 else:
     st.warning("No stock data available for African startup comparison.")
 
-
-# Gold Price Fluctuations
-st.header("Gold Price Fluctuations in the US Market")
-gold_ticker = "GC=F"  # Gold Futures
-try:
-    gold_data = yf.download(gold_ticker, start=sdate, end=edate)
-    if not gold_data.empty:
-        st.subheader("Gold Price (Close)")
-        st.line_chart(gold_data["Close"])
-        st.subheader("Daily Percentage Change")
-        daily_returns = gold_data["Close"].pct_change() * 100
-        st.line_chart(daily_returns)
-    else:
-        st.warning("No gold price data available.")
-except Exception as e:
-    st.error(f"Error fetching gold data: {e}")
