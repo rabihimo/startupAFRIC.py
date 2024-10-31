@@ -11,7 +11,7 @@ import pandas as pd
 st.header("African Startup Stock Performance (Example)")
 # Replace with actual African startup symbols
 african_startups = {
-    "StartUpA": "STKA",  # Example - Replace with real tickers
+    "StartUpA": "wave",  # Example - Replace with real tickers
     "StartUpB": "STKB",
     "StartUpC": "STKC",
     "StartUpD": "STKD",
