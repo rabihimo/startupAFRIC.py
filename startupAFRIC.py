@@ -1,50 +1,34 @@
-import streamlit as st
-import yfinance as yf
 import pandas as pd
-import datetime
+import matplotlib.pyplot as plt
 
-st.set_page_config(layout="wide", page_title="Global Startup Ranking")
-st.title("Top Performing Global Startups (3-Year Analysis)")
-
-# Replace with actual global startup stock symbols
-global_startups = {
-    "Airbnb": "ABNB",
-    "Snowflake": "SNOW",
-    "DoorDash": "DASH",
-    "UiPath": "PATH",
-    "Affirm": "AFRM",
-    # Add more startups here...
+# Sample data: A list of startups with hypothetical metrics
+data = {
+    'Startup': ['Stripe', 'SpaceX', 'Airbnb', 'Palantir', 'Robinhood'],
+    'Funding (millions USD)': [600, 5000, 6000, 2000, 500],
+    'Revenue (millions USD)': [2000, 2000, 1500, 400, 300],
+    'Growth Rate (%)': [50, 25, 40, 30, 70]
 }
 
-# Set analysis period (3 years)
-end_date = datetime.date.today()
-start_date = end_date - datetime.timedelta(days=3 * 365)  # Approx. 3 years
+# Create a DataFrame
+df = pd.DataFrame(data)
 
-# Fetch and analyze data
-startup_data = {}
-for name, symbol in global_startups.items():
-    try:
-        data = yf.download(symbol, start=start_date, end=end_date)
-        if not data.empty:
-            # Calculate 3-year return (simple percentage change)
-            three_year_return = (data['Close'][-1] - data['Close'][0]) / data['Close'][0] * 100
-            startup_data[name] = three_year_return
-        else:
-            st.warning(f"No data found for {name} ({symbol}) within the 3-year period.")
-    except Exception as e:
-        st.warning(f"Could not retrieve data for {name} ({symbol}): {e}")
+# Define a scoring function
+def score_startup(row):
+    return (row['Funding (millions USD)'] * 0.3) + (row['Revenue (millions USD)'] * 0.5) + (row['Growth Rate (%)'] * 0.2)
 
-# Rank startups by 3-year return
-if startup_data:
-    ranked_startups = sorted(startup_data.items(), key=lambda item: item[1], reverse=True)
-    
-    st.subheader("Ranking Based on 3-Year Return:")
-    for i, (name, return_value) in enumerate(ranked_startups):
-        st.write(f"{i + 1}. {name}: {return_value:.2f}%")
-    
-    # Create a bar chart for visualization
-    df_ranked = pd.DataFrame(ranked_startups, columns=['Startup', '3-Year Return'])
-    st.bar_chart(df_ranked, x='Startup', y='3-Year Return')
+# Apply the scoring function
+df['Score'] = df.apply(score_startup, axis=1)
 
-else:
-    st.warning("No sufficient data available for ranking.")
+# Sort startups by score
+ranked_startups = df.sort_values(by='Score', ascending=False)
+
+# Plotting the ranked startups
+plt.figure(figsize=(10, 6))
+plt.barh(ranked_startups['Startup'], ranked_startups['Score'], color='cornflowerblue')
+plt.xlabel('Score')
+plt.title('Ranking of Startups Based on Score')
+plt.grid(axis='x')
+plt.show()
+
+# Display the ranked startups
+print(ranked_startups[['Startup', 'Score']])
